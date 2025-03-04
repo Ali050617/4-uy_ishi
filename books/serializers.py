@@ -18,9 +18,14 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class BookCopySerializer(serializers.ModelSerializer):
+    book = serializers.PrimaryKeyRelatedField(
+        queryset=Book.objects.all(), write_only=True, required=False
+    )
+    book_details = BookSerializer(source='book', read_only=True)
+
     class Meta:
         model = BookCopy
-        fields = ('id', 'book', 'inventory_number', 'condition', 'is_available', 'added_date')
+        fields = ('id', 'book', 'book_details', 'inventory_number', 'condition', 'is_available', 'added_date')
 
 
 class BookLendingSerializer(serializers.ModelSerializer):

@@ -1,4 +1,8 @@
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.exceptions import ValidationError
+from django.utils.timezone import now
+from rest_framework.response import Response
+
 from .models import *
 from .serializers import *
 
@@ -48,6 +52,21 @@ class BookLendingDetailView(generics.RetrieveAPIView):
 class BookLendingReturnView(generics.UpdateAPIView):
     queryset = BookLending.objects.all()
     serializer_class = BookLendingSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Kitob allaqachon qaytarilgan bo'lsa, statusni yangilashga ruxsat bermaymiz
+        if instance.status == "returned":
+            return Response({"detail": "This book has already been returned."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Qaytarilgan sanani hozirgi vaqtga o'zgartiramiz
+        instance.returned_date = now()
+        instance.status = "returned"
+        instance.save()
+
+        # Yangilangan ma'lumotni qaytaramiz
+        return Response(BookLendingSerializer(instance).data, status=status.HTTP_200_OK)
 
 
 class OverdueLendingView(generics.ListAPIView):
