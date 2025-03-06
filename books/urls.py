@@ -10,6 +10,6 @@ urlpatterns = [
     path('copies/<int:id>/', views.BookCopyDetailView.as_view(), name='book_copy_detail'),
     path('lendings/', views.BookLendingListCreateView.as_view(), name='book_lending_list_create'),
     path('lendings/<int:id>/', views.BookLendingDetailView.as_view(), name='book_lending_detail'),
-    path('lendings/<int:pk>/return/', views.BookLendingReturnView.as_view(), name='book_lending_return'),
+    path('lendings/<int:pk>/return/', views.BookLendingReturnView.as_view(), name='lending_return'),
     path('lendings/overdue/', views.OverdueLendingView.as_view(), name='overdue_lending'),
 ]
